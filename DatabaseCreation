@@ -1,0 +1,92 @@
+DROP DATABASE IF exists studentdatabase;
+CREATE DATABASE studentdatabase;
+USE studentdatabase;
+
+drop table if exists Class;
+drop table if exists Student;
+drop table if exists StudentGrades;
+drop table if exists Teacher;
+drop table if exists Extracurriculars;
+
+create table Student (
+sID int PRIMARY KEY,
+grade int,
+firstName varchar(10),
+lastName varChar(10)
+);
+
+create table StudentGrades (
+sID int PRIMARY KEY,
+unweightedGPA double,
+weightedGPA double,
+FOREIGN KEY(sID) REFERENCES Student(sID)
+);
+
+create table Teacher (
+tID int PRIMARY KEY,
+subject varchar(20),
+firstName varchar(10),
+lastName varchar(10)
+);
+
+create table Class (
+cID int PRIMARY KEY,
+tID int,
+className varchar(20),
+spots int,
+FOREIGN KEY(tID) REFERENCES Teacher(tID)
+);
+
+create table Extracurriculars (
+eID int PRIMARY KEY,
+supervisorID int,
+activityname varchar(10),
+FOREIGN KEY(supervisorID) REFERENCES Teacher(tID)
+);
+
+insert into Student values(1001, 9, 'Grace', 'Howard');
+insert into Student values(1002, 10, 'Micheal', 'Scott');
+insert into Student values(1003, 12, 'Gianna', 'Ruccione');
+insert into Student values(1004, 11, 'Pam', 'Beasley');
+insert into Student values(1005, 11, 'Leslie', 'Knope');
+insert into Student values(1006, 9, 'Jim', 'Halpert');
+insert into Student values(1007, 10, 'Lorelei', 'Gilmore');
+insert into Student values(1008, 12, 'Oscar', 'Nunez');
+insert into Student values(1009, 9, 'Ron', 'Swanson');
+insert into Student values(1010, 10, 'Jack', 'Black'); 
+insert into Student values(1011, 12, 'Emma', 'Watson');
+
+insert into StudentGrades values(1001, 3.5, 3.6);
+insert into StudentGrades values(1002, 2.5, 2.5);
+insert into StudentGrades values(1003, 3.9, 4.0);
+insert into StudentGrades values(1004, 3.7, 4.0);
+insert into StudentGrades values(1005, 3.2, 3.3);
+insert into StudentGrades values(1006, 3.0, 3.1);
+insert into StudentGrades values(1007, 3.1, 3.3);
+insert into StudentGrades values(1008, 4.0, 4.2);
+insert into StudentGrades values(1009, 4.0, 4.5);
+insert into StudentGrades values(1010, 2.9, 3.5);
+insert into StudentGrades values(1011, 4.0, 4.6);
+
+insert into Teacher values(2001, 'History', 'Minerva', 'McGonagall');
+insert into Teacher values(2002, 'Math', 'Severus', 'Snape');
+insert into Teacher values(2003, 'English', 'Tiffany', 'Feuerbach');
+insert into Teacher values(2004, 'Computer Science', 'Suneuy', 'Kim');
+insert into Teacher values(2005, 'Art', 'Pablo', 'Picasso');
+
+insert into Class values(100, 2001, 'World History', 30);
+insert into Class values(101, 2002, 'Calculus 1', 35);
+insert into Class values(102, 2003, 'English 1', 31);
+insert into Class values(103, 2004, 'Introduction to CS', 30);
+insert into Class values(104, 2005, 'Introduction to Art', 20);
+insert into Class values(105, 2001, 'Geography', 40);
+insert into Class values(106, 2002, 'Calculus 2', 35);
+insert into Class values(107, 2003, 'English 2', 30);
+insert into Class values(108, 2004, 'Java Programming', 35);
+insert into Class values(109, 2005, 'Art 2', 20);
+
+insert into Extracurriculars values(10, 2001, 'Football');
+insert into Extracurriculars values(11, 2002, 'Cheer');
+insert into Extracurriculars values(12, 2003, 'Basketball');
+insert into Extracurriculars values(13, 2004, 'Soccer');
+insert into Extracurriculars values(14, 2005, 'Wrestling');
