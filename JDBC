@@ -24,7 +24,7 @@ public class DriverManagerTester
 
 //ENTER YOUR OWN PASSWORD IN THE QUOTES
       try {
-          connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "hello123");
+          connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "ENTER PASSWORD HERE");
 
           Statement stmt = connection.createStatement();
           ResultSet rs;
