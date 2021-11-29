@@ -4,71 +4,122 @@ import java.util.Scanner;
 public class DriverManagerTester
 {
 
-    public static void main(String[] argv) {
+  public static void main(String[] argv) {
 
-        System.out.println("-------- MySQL JDBC Connection Testing ------------");
+	  System.out.println("-------- MySQL JDBC Connection Testing ------------");
 
-        Connection connection = null;
-        Scanner scan = new Scanner(System.in);
+      Connection connection = null;
+      Scanner scan = new Scanner(System.in);
 
-        System.out.println("Welcome to the student database. Please select from the following options:");
-        System.out.println("1. View Average Unweighted GPA for Each Grade");
-        System.out.println("2. Insert a New Teacher");
-        System.out.println("3. View All Students Currently Enrolled");
-        int choice = scan.nextInt();
+      System.out.println("Welcome to the student database. Please select from the following options:");
+      System.out.println("1. View Average Unweighted GPA for Each Grade");
+      System.out.println("2. Insert a New Teacher");
+      System.out.println("3. View All Students Currently Enrolled");
+      System.out.println("4. Insert a new student");
+      System.out.println("5. View all the extracurricular activities teachers supervise");
+      System.out.println("6. View which teacher is also a supervisor");
+      System.out.println("7. View the number of classes all teachers teach in descending order");
+      System.out.println("8. View all the teachers for a given subject");
+      int choice = scan.nextInt();
 
-// ENTER YOUR OWN PASSWORD IN THE QUOTES
-        try {
-            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "ENTER YOUR PASSWORD");
+//ENTER YOUR OWN PASSWORD IN THE QUOTES
+      try {
+          connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "hello123");
 
-            Statement stmt = connection.createStatement();
-            ResultSet rs;
+          Statement stmt = connection.createStatement();
+          ResultSet rs;
 
-            if(choice == 1) {
-                rs = stmt.executeQuery("select grade, round(avg(unweightedGPA),2) AS averageGPA from Student NATURAL JOIN StudentGrades group by grade order by grade");
-                while (rs.next())
-                    System.out.println("Grade=" + rs.getInt(1) + " Unweighted GPA=" + rs.getDouble(2));
-            }
-            if(choice == 2)
-            {
-                System.out.println("Please enter the teacher ID number: ");
-                int tID = scan.nextInt();
-                scan.nextLine();
-                System.out.println("Please enter the teacher's subject: ");
-                String subject = scan.nextLine();
-                System.out.println("Please enter the teacher's first name: ");
-                String firstName = scan.nextLine();
-                System.out.println("Please enter the teacher's last name: ");
-                String lastName = scan.nextLine();
-                stmt.execute("insert into Teacher values ("+tID+",'"+subject+"','"+firstName+"','"+lastName+"')");
-                Statement stmt2 = connection.createStatement();
-                rs = stmt2.executeQuery("select * from Teacher");
+          if(choice == 1) 
+          {
+              rs = stmt.executeQuery("select grade, round(avg(unweightedGPA),2) AS averageGPA from Student NATURAL JOIN StudentGrades group by grade order by grade");
+              while (rs.next())
+                  System.out.println("Grade=" + rs.getInt(1) + " Unweighted GPA=" + rs.getDouble(2));
+          }
+          
+          if(choice == 2)
+          {
+              System.out.println("Please enter the teacher ID number: ");
+              int tID = scan.nextInt();
+              scan.nextLine();
+              System.out.println("Please enter the teacher's subject: ");
+              String subject = scan.nextLine();
+              System.out.println("Please enter the teacher's first name: ");
+              String firstName = scan.nextLine();
+              System.out.println("Please enter the teacher's last name: ");
+              String lastName = scan.nextLine();
+              stmt.execute("insert into Teacher values ("+tID+",'"+subject+"','"+firstName+"','"+lastName+"')");
+              Statement stmt2 = connection.createStatement();
+              rs = stmt2.executeQuery("select * from Teacher");
 
-                while (rs.next())
-                    System.out.println("tID=" + rs.getInt(1) + "    Subject=" +rs.getString(2) + "   FirstName=" + rs.getString(3) +
-                            "   LastName=" + rs.getString(4));
-            }
+              while (rs.next())
+                  System.out.println("tID=" + rs.getInt(1) + "    Subject=" +rs.getString(2) + "   FirstName=" + rs.getString(3) +
+                          "   LastName=" + rs.getString(4));
+          }
 
-            if(choice == 3)
-            {
-                rs = stmt.executeQuery("select sID, firstName, lastName from Student");
-                while(rs.next())
-                    System.out.println("sID="+rs.getInt(1) + "  FirstName="+rs.getString(2) + "     LastName=" +rs.getString(3));
-            }
+          if(choice == 3)
+          {
+              rs = stmt.executeQuery("select sID, firstName, lastName from Student");
+              while(rs.next())
+                  System.out.println("sID="+rs.getInt(1) + "  FirstName="+rs.getString(2) + "     LastName=" +rs.getString(3));
+          }
 
+          if(choice == 4)
+          {
+        	  System.out.println("Please enter the student ID number: ");
+              int sID = scan.nextInt();
+              scan.nextLine();
+              System.out.println("Please enter the student's grade: ");
+              int grade = scan.nextInt();
+              scan.nextLine();
+              System.out.println("Please enter the student's first name: ");
+              String firstName = scan.nextLine();
+              System.out.println("Please enter the student's last name: ");
+              String lastName = scan.nextLine();
+              stmt.execute("insert into Teacher values ("+sID+","+grade+",'"+firstName+"','"+lastName+"')");
+              Statement stmt3 = connection.createStatement();
+              rs = stmt3.executeQuery("select * from Student");
+          }
 
+          if(choice == 5) 
+          {
+              rs = stmt.executeQuery("select activityname from Teacher left outer join extracurriculars on tID = supervisorID");
+              while (rs.next())
+                  System.out.println("ActivityName=" + rs.getString(1));
+          }
+          
+          if(choice == 6) 
+          {
+              rs = stmt.executeQuery("select firstName, lastName from Teacher natural join extracurriculars where tID = supervisorID");
+              while (rs.next())
+                  System.out.println("FirstName="+rs.getString(1) + "LastName=" +rs.getString(2));
+          }
+          
+          if(choice == 7) 
+          {
+              rs = stmt.executeQuery("select firstName, lastName, count(tID) as numClasses from Teacher natural join Class group by tID order by count(tID) desc");
+              while (rs.next())
+                  System.out.println("FirstName="+rs.getString(1) + "LastName=" + rs.getString(2) + "count=" + rs.getInt(3));
+          }
+          
+          if(choice == 8)
+          {
+              System.out.println("Please enter the subject name: ");
+              String subject = scan.nextLine();
+              rs = stmt.executeQuery("Select firstName, lastName, subject from Teacher where subject = '"+subject+"'");
+              while (rs.next())
+                  System.out.println("FirstName=" + rs.getString(1) + "LastName=" + rs.getString(2) + "Subject=" + rs.getString(3));
+          }
+          
+      } catch (SQLException e) {
+          System.out.println("Connection Failed! Check output console");
+          e.printStackTrace();
+          return;
+      }
 
-
-        } catch (SQLException e) {
-            System.out.println("Connection Failed! Check output console");
-            e.printStackTrace();
-            return;
-        }
-
-        if (connection != null) {
-//            System.out.println("You made it, take control your database now!");
-        } else {
-            System.out.println("Failed to make connection!");
-        }
-    }
+      if (connection != null) {
+//          System.out.println("You made it, take control your database now!");
+      } else {
+          System.out.println("Failed to make connection!");
+      }
+  }
 }
