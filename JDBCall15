@@ -12,8 +12,7 @@ public class DriverManagerTester
         int choice = printMenu();
         
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "pass");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3307/studentdatabase?user=root","root", "Anthony71300");
 
             if(choice == 1) {
                 getAvgGPAForEachGrade(connection);
@@ -135,8 +134,8 @@ public class DriverManagerTester
         ResultSet rs = stmt2.executeQuery("select * from Teacher");
 
         while (rs.next())
-            System.out.println("tID=" + rs.getInt(1) + "Subject=" + rs.getString(2) + 
-            		"FirstName=" + rs.getString(3) + "LastName=" + rs.getString(4));
+            System.out.println("tID=" + rs.getInt(1) + " Subject=" + rs.getString(2) + 
+            		" FirstName=" + rs.getString(3) + " LastName=" + rs.getString(4));
     }
 
     public static void getAllStudentInfo(Connection connection) throws java.sql.SQLException
@@ -145,7 +144,7 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("select sID, firstName, lastName from Student");
         
         while(rs.next())
-            System.out.println("sID="+rs.getInt(1) + "FirstName=" + rs.getString(2) + "LastName=" + rs.getString(3));
+            System.out.println("sID="+rs.getInt(1) + " FirstName=" + rs.getString(2) + " LastName=" + rs.getString(3));
     }
     
     public static void insertNewStudent(Connection connection) throws java.sql.SQLException
@@ -163,13 +162,13 @@ public class DriverManagerTester
         System.out.println("Please enter the student's last name: ");
         String lastName = scan.nextLine();
         
-        stmt.execute("insert into Teacher values ("+sID+","+grade+",'"+firstName+"','"+lastName+"')");
+        stmt.execute("insert into Student values ("+sID+","+grade+",'"+firstName+"','"+lastName+"')");
         Statement stmt3 = connection.createStatement();
         ResultSet rs = stmt3.executeQuery("select * from Student");
         
         while (rs.next())
-            System.out.println("sID=" + rs.getInt(1) + "Grade=" +rs.getString(2) + 
-            		"FirstName=" + rs.getString(3) + "LastName=" + rs.getString(4));
+            System.out.println("sID=" + rs.getInt(1) + " Grade=" +rs.getString(2) + 
+            		" FirstName=" + rs.getString(3) + " LastName=" + rs.getString(4));
     }
 
     public static void getEcaForEachTeacher(Connection connection) throws java.sql.SQLException 
@@ -187,7 +186,7 @@ public class DriverManagerTester
     	ResultSet rs = stmt.executeQuery("select firstName, lastName from Teacher natural join extracurriculars where tID = supervisorID");
         
     	while (rs.next())
-            System.out.println("FirstName=" + rs.getString(1) + "LastName=" + rs.getString(2));
+            System.out.println("FirstName=" + rs.getString(1) + " LastName=" + rs.getString(2));
     }
     
     public static void getNumClassesTeachersTeach(Connection connection) throws java.sql.SQLException
@@ -196,7 +195,7 @@ public class DriverManagerTester
     	ResultSet rs = stmt.executeQuery("select firstName, lastName, count(tID) as numClasses from Teacher natural join Class group by tID order by count(tID) desc");
         
     	while (rs.next())
-            System.out.println("FirstName="+rs.getString(1) + "LastName=" + rs.getString(2) + "Count=" + rs.getInt(3));
+            System.out.println("FirstName="+rs.getString(1) + " LastName=" + rs.getString(2) + " Count=" + rs.getInt(3));
     }
     
     public static void getTeachersForSubject(Connection connection) throws java.sql.SQLException
@@ -207,7 +206,7 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("Select firstName, lastName, subject from Teacher where subject = '"+subject+"'");
         
         while (rs.next())
-            System.out.println("FirstName=" + rs.getString(1) + "LastName=" + rs.getString(2) + "Subject=" + rs.getString(3));
+            System.out.println("FirstName=" + rs.getString(1) + " LastName=" + rs.getString(2) + " Subject=" + rs.getString(3));
     }
 
     public static void getStudentGPAAbove(Connection connection) throws java.sql.SQLException
@@ -216,7 +215,7 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("Select firstName, lastName, unweightedGPA from Student NATURAL JOIN StudentGrades where unweightedGPA >= 3.5;");
 
         while (rs.next())
-            System.out.println("FirstName=" + rs.getString(1) + "LastName=" + rs.getString(2) + "Unweighted GPA=" + rs.getString(3));
+            System.out.println("FirstName=" + rs.getString(1) + " LastName=" + rs.getString(2) + " Unweighted GPA=" + rs.getString(3));
     }
 
     public static void insertNewExtracurricular(Connection connection) throws java.sql.SQLException
@@ -237,8 +236,8 @@ public class DriverManagerTester
         ResultSet rs = stmt2.executeQuery("Select * from Extracurriculars");
 
         while (rs.next())
-            System.out.println("Extracurricular ID=" + rs.getInt(1) + "Supervisor ID=" + rs.getString(2) + 
-            		"Activity Name=" + rs.getString(3));
+            System.out.println("Extracurricular ID=" + rs.getInt(1) + " Supervisor ID=" + rs.getString(2) + 
+            		" Activity Name=" + rs.getString(3));
     }
 
     public static void getUpperClassmen(Connection connection) throws java.sql.SQLException
@@ -247,7 +246,7 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("Select * from Student where grade=11 UNION select * from Student where grade=12;");
 
         while (rs.next())
-            System.out.println("sID=" + rs.getString(1) + "Grade=" + rs.getString(2) + "First Name=" + rs.getString(3) + "Last Name=" + rs.getString(4));
+            System.out.println("sID=" + rs.getString(1) + " Grade=" + rs.getString(2) + " First Name=" + rs.getString(3) + " Last Name=" + rs.getString(4));
     }
 
     public static void getSameLastName(Connection connection) throws java.sql.SQLException
@@ -256,7 +255,7 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("select Student.firstName, Student.lastName, Teacher.firstName,Teacher.lastName from Student inner join Teacher where Student.lastName = Teacher.lastName;");
 
         while (rs.next())
-            System.out.println("Student First Name=" + rs.getString(1) + "Student Last Name=" + rs.getString(2) + "Teacher First Name=" + rs.getString(3) + "Teacher Last Name=" + rs.getString(4));
+            System.out.println("Student First Name=" + rs.getString(1) + " Student Last Name=" + rs.getString(2) + " Teacher First Name=" + rs.getString(3) + " Teacher Last Name=" + rs.getString(4));
     }
 
     public static void getSubjectTaughtMoreThanOneTeacher(Connection connection) throws java.sql.SQLException
@@ -265,7 +264,7 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("select subject, count(tID) from Teacher group by subject having count(subject) > 1;");
 
         while (rs.next())
-            System.out.println("Subject=" + rs.getString(1) + "Count=" + rs.getString(2));
+            System.out.println("Subject=" + rs.getString(1) + " Count=" + rs.getString(2));
     }
 
     public static void getStudentGPAAboveAverage(Connection connection) throws java.sql.SQLException
@@ -274,7 +273,7 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("select sID, unweightedGPA from StudentGrades where unweightedGPA > (select avg(unweightedGPA) AS averageGPA from Student natural join StudentGrades);");
 
         while (rs.next())
-            System.out.println("sID=" + rs.getString(1) + "Unweighted GPA=" + rs.getString(2));
+            System.out.println("sID=" + rs.getString(1) + " Unweighted GPA=" + rs.getString(2));
     }
 
     public static void getClassWithSpot(Connection connection) throws java.sql.SQLException
@@ -285,6 +284,6 @@ public class DriverManagerTester
         ResultSet rs = stmt.executeQuery("select Class.className,Class.spots from Class where Class.className =  "+className+"");
 
         while (rs.next())
-            System.out.println("sID=" + rs.getString(1) + "Unweighted GPA=" + rs.getString(2));
+            System.out.println("sID=" + rs.getString(1) + " Unweighted GPA=" + rs.getString(2));
     }
 }
