@@ -13,7 +13,7 @@ public class DriverManagerTester
         
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3307/studentdatabase?user=root","root", "pass");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "pass");
 
             if(choice == 1) {
                 getAvgGPAForEachGrade(connection);
