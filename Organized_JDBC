@@ -21,15 +21,33 @@ public class DriverManagerTester
             {
                 insertNewTeacher(connection);
             }
-
             else if(choice == 3)
             {
                 getAllStudentInfo(connection);
             }
-
+            else if(choice == 4)
+            {
+            	insertNewStudent(connection);
+            }
+            else if(choice == 5)
+            {
+                getEcaForEachTeacher(connection);
+            }
+            else if(choice == 6)
+            {
+                getTeacherAlsoSupervisor(connection);
+            }
+            else if(choice == 7)
+            {
+                getNumClassesTeachersTeach(connection);
+            }
+            else if(choice == 8)
+            {
+                getTeachersForSubject(connection);
+            }
 
         } catch (SQLException e) {
-            System.out.println("Connection Failed! Check output console");
+            System.out.println("Connection failed! Check output console");
             e.printStackTrace();
             return;
         }
@@ -45,6 +63,11 @@ public class DriverManagerTester
         System.out.println("1. View Average Unweighted GPA for Each Grade");
         System.out.println("2. Insert a New Teacher");
         System.out.println("3. View All Students Currently Enrolled");
+        System.out.println("4. Insert a new student");
+        System.out.println("5. View all the extracurricular activities teachers supervise");
+        System.out.println("6. View which teacher is also a supervisor");
+        System.out.println("7. View the number of classes all teachers teach in descending order");
+        System.out.println("8. View all the teachers for a given subject");
         return scan.nextInt();
     }
 
@@ -52,6 +75,7 @@ public class DriverManagerTester
     {
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("select grade, round(avg(unweightedGPA),2) AS averageGPA from Student NATURAL JOIN StudentGrades group by grade order by grade");
+        
         while (rs.next())
             System.out.println("Grade=" + rs.getInt(1) + " Unweighted GPA=" + rs.getDouble(2));
     }
@@ -59,6 +83,7 @@ public class DriverManagerTester
     public static void insertNewTeacher(Connection connection) throws java.sql.SQLException
     {
         Statement stmt = connection.createStatement();
+        
         System.out.println("Please enter the teacher ID number: ");
         int tID = scan.nextInt();
         scan.nextLine();
@@ -68,20 +93,84 @@ public class DriverManagerTester
         String firstName = scan.nextLine();
         System.out.println("Please enter the teacher's last name: ");
         String lastName = scan.nextLine();
+        
         stmt.execute("insert into Teacher values ("+tID+",'"+subject+"','"+firstName+"','"+lastName+"')");
         Statement stmt2 = connection.createStatement();
         ResultSet rs = stmt2.executeQuery("select * from Teacher");
 
         while (rs.next())
-            System.out.println("tID=" + rs.getInt(1) + "    Subject=" +rs.getString(2) + "   FirstName=" + rs.getString(3) +
-                    "   LastName=" + rs.getString(4));
+            System.out.println("tID=" + rs.getInt(1) + "Subject=" + rs.getString(2) + 
+            		"FirstName=" + rs.getString(3) + "LastName=" + rs.getString(4));
     }
 
     public static void getAllStudentInfo(Connection connection) throws java.sql.SQLException
     {
         Statement stmt = connection.createStatement();
         ResultSet rs = stmt.executeQuery("select sID, firstName, lastName from Student");
+        
         while(rs.next())
-            System.out.println("sID="+rs.getInt(1) + "  FirstName="+rs.getString(2) + "     LastName=" +rs.getString(3));
+            System.out.println("sID="+rs.getInt(1) + "FirstName=" + rs.getString(2) + "LastName=" + rs.getString(3));
+    }
+    
+    public static void insertNewStudent(Connection connection) throws java.sql.SQLException
+    {
+    	Statement stmt = connection.createStatement();
+  	  	
+    	System.out.println("Please enter the student ID number: ");
+        int sID = scan.nextInt();
+        scan.nextLine();
+        System.out.println("Please enter the student's grade: ");
+        int grade = scan.nextInt();
+        scan.nextLine();
+        System.out.println("Please enter the student's first name: ");
+        String firstName = scan.nextLine();
+        System.out.println("Please enter the student's last name: ");
+        String lastName = scan.nextLine();
+        
+        stmt.execute("insert into Teacher values ("+sID+","+grade+",'"+firstName+"','"+lastName+"')");
+        Statement stmt3 = connection.createStatement();
+        ResultSet rs = stmt3.executeQuery("select * from Student");
+        
+        while (rs.next())
+            System.out.println("sID=" + rs.getInt(1) + "Grade=" +rs.getString(2) + 
+            		"FirstName=" + rs.getString(3) + "LastName=" + rs.getString(4));
+    }
+
+    public static void getEcaForEachTeacher(Connection connection) throws java.sql.SQLException 
+    {
+    	Statement stmt = connection.createStatement();
+    	ResultSet rs = stmt.executeQuery("select activityname from Teacher left outer join extracurriculars on tID = supervisorID");
+        
+    	while (rs.next())
+            System.out.println("ActivityName=" + rs.getString(1));
+    }
+    
+    public static void getTeacherAlsoSupervisor(Connection connection) throws java.sql.SQLException
+    {
+    	Statement stmt = connection.createStatement();
+    	ResultSet rs = stmt.executeQuery("select firstName, lastName from Teacher natural join extracurriculars where tID = supervisorID");
+        
+    	while (rs.next())
+            System.out.println("FirstName=" + rs.getString(1) + "LastName=" + rs.getString(2));
+    }
+    
+    public static void getNumClassesTeachersTeach(Connection connection) throws java.sql.SQLException
+    {
+    	Statement stmt = connection.createStatement();
+    	ResultSet rs = stmt.executeQuery("select firstName, lastName, count(tID) as numClasses from Teacher natural join Class group by tID order by count(tID) desc");
+        
+    	while (rs.next())
+            System.out.println("FirstName="+rs.getString(1) + "LastName=" + rs.getString(2) + "Count=" + rs.getInt(3));
+    }
+    
+    public static void getTeachersForSubject(Connection connection) throws java.sql.SQLException
+    {
+    	Statement stmt = connection.createStatement();
+        System.out.println("Please enter the subject name: ");
+        String subject = scan.nextLine();
+        ResultSet rs = stmt.executeQuery("Select firstName, lastName, subject from Teacher where subject = '"+subject+"'");
+        
+        while (rs.next())
+            System.out.println("FirstName=" + rs.getString(1) + "LastName=" + rs.getString(2) + "Subject=" + rs.getString(3));
     }
 }
