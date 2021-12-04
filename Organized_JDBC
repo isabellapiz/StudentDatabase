@@ -12,7 +12,7 @@ public class StudentDatabase
         int choice = printMenu();
 
         try {
-            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "PASSWORD");
+            connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/studentdatabase?user=root","root", "PASS");
 
             if(choice == 1) {
                 getAvgGPAForEachGrade(connection);
@@ -91,7 +91,7 @@ public class StudentDatabase
         System.out.println("2. Insert a New Teacher");
         System.out.println("3. View All Students Currently Enrolled");
         System.out.println("4. Insert a new student");
-        System.out.println("5. View all the extracurricular activities and the supervisor");
+        System.out.println("5. View all teachers and the activities each supervises");
         System.out.println("6. View which teacher is also a supervisor");
         System.out.println("7. View the number of classes all teachers teach in descending order");
         System.out.println("8. View all the teachers for a given subject");
@@ -133,8 +133,8 @@ public class StudentDatabase
         ResultSet rs = stmt2.executeQuery("select * from Teacher");
 
         while (rs.next())
-            System.out.println("tID=" + rs.getInt(1) + " Subject=" + rs.getString(2) +
-                    " FirstName=" + rs.getString(3) + " LastName=" + rs.getString(4));
+            System.out.println("tID=" + rs.getInt(1) + "    Subject=" + rs.getString(2) +
+                    "   FirstName=" + rs.getString(3) + "   LastName=" + rs.getString(4));
     }
 
     public static void getAllStudentInfo(Connection connection) throws java.sql.SQLException
@@ -143,7 +143,7 @@ public class StudentDatabase
         ResultSet rs = stmt.executeQuery("select sID, firstName, lastName from Student");
 
         while(rs.next())
-            System.out.println("sID="+rs.getInt(1) + " FirstName=" + rs.getString(2) + " LastName=" + rs.getString(3));
+            System.out.println("sID="+rs.getInt(1) + "  FirstName=" + rs.getString(2) + "   LastName=" + rs.getString(3));
     }
 
     public static void insertNewStudent(Connection connection) throws java.sql.SQLException
@@ -161,13 +161,13 @@ public class StudentDatabase
         System.out.println("Please enter the student's last name: ");
         String lastName = scan.nextLine();
 
-        stmt.execute("insert into Student values ("+sID+","+grade+",'"+firstName+"','"+lastName+"')");
+        stmt.execute("insert into Student values (" +sID+","+grade+",'"+firstName+"','"+lastName+"')");
         Statement stmt3 = connection.createStatement();
         ResultSet rs = stmt3.executeQuery("select * from Student");
 
         while (rs.next())
-            System.out.println("sID=" + rs.getInt(1) + " Grade=" +rs.getString(2) +
-                    " FirstName=" + rs.getString(3) + " LastName=" + rs.getString(4));
+            System.out.println("sID=" + rs.getInt(1) + "    Grade=" +rs.getString(2) +
+                    "   FirstName=" + rs.getString(3) + "   LastName=" + rs.getString(4));
     }
 
     public static void getEcaForEachTeacher(Connection connection) throws java.sql.SQLException
@@ -176,7 +176,7 @@ public class StudentDatabase
         ResultSet rs = stmt.executeQuery("select activityname, firstName, lastName from Teacher left outer join extracurriculars on tID = supervisorID");
 
         while (rs.next())
-            System.out.println("ActivityName=" + rs.getString(1) + " Teacher Name=" + rs.getString(2) + " " + rs.getString(3));
+            System.out.println("ActivityName=" + rs.getString(1) + "    Teacher Name=" + rs.getString(2) + " " + rs.getString(3));
     }
 
     public static void getTeacherAlsoSupervisor(Connection connection) throws java.sql.SQLException
@@ -255,7 +255,7 @@ public class StudentDatabase
         ResultSet rs = stmt.executeQuery("select Student.firstName, Student.lastName, Teacher.firstName,Teacher.lastName from Student inner join Teacher where Student.lastName = Teacher.lastName;");
 
         while (rs.next())
-            System.out.println("Student First Name=" + rs.getString(1) + " Student Last Name=" + rs.getString(2) + " Teacher First Name=" + rs.getString(3) + " Teacher Last Name=" + rs.getString(4));
+            System.out.println("Student Name=" + rs.getString(1) + " " + rs.getString(2) + " | Teacher Name=" + rs.getString(3) + " " + rs.getString(4));
     }
 
     public static void getSubjectTaughtMoreThanOneTeacher(Connection connection) throws java.sql.SQLException
